@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Created on Mon Oct 19 12:05:45 2020
 @author: mohan
@@ -37,31 +38,33 @@ elementID.send_keys(password)
 
 elementID.submit()
 
-visitingProfileID = '/company/accenture/mycompany/verification/'
+visitingProfileID = '/company/accenture'
 fullLink = 'https://www.linkedin.com/' + visitingProfileID
 
 browser.get(fullLink)
 
-#browser.find_element_by_xpath('//div[@class="msg-overlay-list-bubble"]/*[name()="svg"][@aria-label="Search"]').click()
+time.sleep(2)
 
+page_source=browser.page_source
 
-browser.get("https://www.linkedin.com/search/results/people/?facetCurrentCompany=%5B%221033%22%2C%22217062%22%2C%22456960%22%2C%22336238%22%2C%222936833%22%2C%2248925%22%5D&origin=COMPANY_PAGE_CANNED_SEARCH")
+soup = BeautifulSoup(page_source,'lxml')
+
+link = soup.find_all('a',{'class', 'ember-view link-without-visited-state inline-block'})
+
+link_str=str(link)
+a=link_str.split('href="')
+b=a[1]
+c=b.split('"')
+emp_link = c[0]
+
+emp_details_link= 'https://www.linkedin.com' + str(emp_link)
+
+browser.get(emp_details_link)
 
 time.sleep(2)
 browser.execute_script("window.scrollTo(0, 800)") 
 time.sleep(2)
-"""
-url = "https://www.linkedin.com/search/results/people/?facetCurrentCompany=%5B%221033%22%2C%22217062%22%2C%22456960%22%2C%22336238%22%2C%222936833%22%2C%2248925%22%5D&origin=COMPANY_PAGE_CANNED_SEARCH"
-req = requests.get(url)
-con = req.content
-soup = BeautifulSoup(con, "html.parser")
-#print(soup.prettify())
-#content = soup.find_all('div', {'class', 'authentication-outlet'})
-#print(content)
-mydivs = soup.find("section", {"id": "artdeco-toasts"})
-content = str(mydivs)
-print(content[:10])
-"""
+
 page_source=browser.page_source
 
 soup = BeautifulSoup(page_source,'lxml')
@@ -83,7 +86,7 @@ for i in p_list:
     result_array1.append(j[82:-9])
 
 for i in range (2,5):
-    browser.get("https://www.linkedin.com/search/results/people/?facetCurrentCompany=%5B%221033%22%2C%22217062%22%2C%22456960%22%2C%22336238%22%2C%222936833%22%2C%2248925%22%5D&origin=COMPANY_PAGE_CANNED_SEARCH&page="+str(i))
+    browser.get(emp_details_link+"&page="+str(i))
     time.sleep(2)
     browser.execute_script("window.scrollTo(0, 800)") 
     time.sleep(2)
